@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+
+  prom:
+    image: prom/prometheus:latest
+    ports:
+      - "82:9090"
+    volumes:
+      - ./prom/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  zipkin-srv:
+    image: openzipkin/zipkin
+    ports:
+      - "80:9411"
+    depends_on:
+      - prom
+
+  site1:
+    build: site1
+    ports:
+      - "81:8000"
+    depends_on:
+      - zipkin-srv
